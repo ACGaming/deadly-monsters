@@ -9,7 +9,7 @@ buildscript {
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
 
-version = "1.12.2-1.9.5"
+version = "1.12.2-1.9.6"
 group = "com.dmonsters"
 archivesBaseName = "DeadlyMonsters"
 
@@ -27,7 +27,7 @@ minecraft {
 repositories {
     maven {
         name 'DVS1 Maven FS'
-        url 'http://dvs1.progwml6.com/files/maven'
+        url 'https://dvs1.progwml6.com/files/maven'
     }
     maven {
         name = "Curse Maven"

@@ -166,6 +166,8 @@ public class ModConfig
         public float mutantSteveSpeedMultiplier = 1.0F;
         @Name("Spawn Rate")
         public int mutantSteveSpawnRate = 8;
+        @Name("Break Blocks?")
+        public boolean mutantSteveBreakBlocks = true;
         @Name("Disabled?")
         public boolean mutantSteveDisabled = false;
     }

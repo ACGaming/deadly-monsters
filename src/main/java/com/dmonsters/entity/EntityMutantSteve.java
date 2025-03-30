@@ -28,6 +28,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import com.dmonsters.DeadlyMonsters;
 import com.dmonsters.entity.ai.DeadlyMonsterAIMelee;
+import com.dmonsters.entity.ai.EntityAIMutantSteveAttack;
 import com.dmonsters.main.ModConfig;
 import com.dmonsters.main.ModSounds;
 
@@ -53,12 +54,13 @@ public class EntityMutantSteve extends EntityMob
         this.getDataManager().set(ARMS_RAISED, armsRaised);
     }
 
+    @Override
     public void onLivingUpdate()
     {
         if (this.world.isDaytime() && !this.world.isRemote)
         {
             float f = this.getBrightness();
-            BlockPos blockpos = this.getRidingEntity() instanceof EntityBoat ? (new BlockPos(this.posX, (double) Math.round(this.posY), this.posZ)).up() : new BlockPos(this.posX, (double) Math.round(this.posY), this.posZ);
+            BlockPos blockpos = this.getRidingEntity() instanceof EntityBoat ? (new BlockPos(this.posX, Math.round(this.posY), this.posZ)).up() : new BlockPos(this.posX, Math.round(this.posY), this.posZ);
             if (f > 0.5F && this.rand.nextFloat() * 30.0F < (f - 0.4F) * 2.0F && this.world.canSeeSky(blockpos))
             {
                 this.setFire(8);
@@ -68,7 +70,7 @@ public class EntityMutantSteve extends EntityMob
     }
 
     @Override
-    protected SoundEvent getHurtSound(DamageSource amageSource)
+    protected SoundEvent getHurtSound(DamageSource damageSource)
     {
         return ModSounds.MUTANT_HURT;
     }
@@ -80,14 +82,14 @@ public class EntityMutantSteve extends EntityMob
     }
 
     @Override
-    public boolean attackEntityAsMob(Entity entityIn)
+    public boolean attackEntityAsMob(Entity entity)
     {
-        if (super.attackEntityAsMob(entityIn))
+        if (super.attackEntityAsMob(entity))
         {
-            if (entityIn instanceof EntityLivingBase)
+            if (entity instanceof EntityLivingBase)
             {
                 this.playSound(ModSounds.MUTANT_ATTACK, 1, 1);
-                ((EntityLivingBase) entityIn).knockBack(entityIn, 2, this.posX + entityIn.posX, this.posZ + entityIn.posZ);
+                ((EntityLivingBase) entity).knockBack(entity, 2, this.posX + entity.posX, this.posZ + entity.posZ);
             }
             return true;
         }
@@ -108,6 +110,7 @@ public class EntityMutantSteve extends EntityMob
         this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(40.0D * ModConfig.CATEGORY_GENERAL.globalHealthMultiplier * ModConfig.CATEGORY_MUTANT_STEVE.mutantSteveHealthMultiplier);
     }
 
+    @Override
     public EnumCreatureAttribute getCreatureAttribute()
     {
         return EnumCreatureAttribute.UNDEAD;
@@ -116,18 +119,25 @@ public class EntityMutantSteve extends EntityMob
     @Override
     protected void initEntityAI()
     {
-        this.tasks.addTask(1, new DeadlyMonsterAIMelee(this, 2.0D, false));
+        if (ModConfig.CATEGORY_MUTANT_STEVE.mutantSteveBreakBlocks)
+        {
+            this.tasks.addTask(1, new EntityAIMutantSteveAttack(this, 2.0D, false));
+        }
+        else
+        {
+            this.tasks.addTask(1, new DeadlyMonsterAIMelee(this, 2.0D, false));
+        }
         this.tasks.addTask(7, new EntityAIWander(this, 1.0D));
         this.tasks.addTask(8, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
         this.tasks.addTask(8, new EntityAILookIdle(this));
-        this.applyEntityAI();
+        this.targetTasks.addTask(0, new EntityAINearestAttackableTarget<>(this, EntityPlayer.class, true));
     }
 
     @Override
     protected void entityInit()
     {
         super.entityInit();
-        this.getDataManager().register(ARMS_RAISED, Boolean.FALSE);
+        this.getDataManager().register(ARMS_RAISED, false);
     }
 
     @Override
@@ -150,13 +160,8 @@ public class EntityMutantSteve extends EntityMob
     }
 
     @Override
-    protected void playStepSound(BlockPos pos, Block blockIn)
+    protected void playStepSound(BlockPos pos, Block block)
     {
         this.playSound(SoundEvents.ENTITY_ZOMBIE_STEP, 0.15F, 1.0F);
-    }
-
-    private void applyEntityAI()
-    {
-        this.targetTasks.addTask(0, new EntityAINearestAttackableTarget(this, EntityPlayer.class, true));
     }
 }
