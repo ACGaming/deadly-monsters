@@ -1,10 +1,8 @@
 package com.dmonsters.entity;
 
-import java.util.Random;
 import javax.annotation.Nullable;
 
 import net.minecraft.block.Block;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.*;
 import net.minecraft.entity.monster.EntityMob;
@@ -19,8 +17,6 @@ import com.dmonsters.DeadlyMonsters;
 import com.dmonsters.entity.ai.DeadlyMonsterAIMelee;
 import com.dmonsters.main.ModConfig;
 import com.dmonsters.main.ModSounds;
-import com.dmonsters.network.PacketClientFXUpdate;
-import com.dmonsters.network.PacketHandler;
 
 public class EntityHauntedCow extends EntityMob
 {
@@ -68,33 +64,6 @@ public class EntityHauntedCow extends EntityMob
     protected SoundEvent getDeathSound()
     {
         return ModSounds.HAUNTEDCOW_DEATH;
-    }
-
-    @Override
-    public boolean attackEntityAsMob(Entity entityIn)
-    {
-        super.attackEntityAsMob(entityIn);
-        this.playSound(ModSounds.HAUNTEDCOW_AMBIENT, 1, 1);
-        if (ModConfig.CATEGORY_HAUNTED_COW.hauntedCowDisableTimeChange)
-        {
-            return true;
-        }
-        Random random = new Random();
-        float rndNum = random.nextFloat();
-        if (rndNum < 0.5f)
-        {
-            return true;
-        }
-        if (entityIn.world.isDaytime())
-        {
-            PacketHandler.INSTANCE.sendToAll(new PacketClientFXUpdate(entityIn.getPosition(), PacketClientFXUpdate.Type.TIME_CHANGE));
-            if (entityIn.world.getGameRules().getBoolean("doDaylightCycle"))
-            {
-                long i = world.getWorldTime() + 24000L;
-                world.setWorldTime((i - i % 24000L) - 6000L);
-            }
-        }
-        return true;
     }
 
     @Override
