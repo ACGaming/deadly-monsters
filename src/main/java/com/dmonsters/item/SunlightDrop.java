@@ -47,7 +47,7 @@ public class SunlightDrop extends Item
                 if (worldIn.getGameRules().getBoolean("doDaylightCycle"))
                 {
                     long i = worldIn.getWorldTime();
-                    worldIn.setWorldTime(i - i % 24000L);
+                    worldIn.setWorldTime(i - i % ModConfig.CATEGORY_GENERAL.dayLengthTicks);
                 }
                 itemStackIn.shrink(1);
                 return new ActionResult(EnumActionResult.SUCCESS, itemStackIn);

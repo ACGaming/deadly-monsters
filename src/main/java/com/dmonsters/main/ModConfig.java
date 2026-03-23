@@ -51,6 +51,8 @@ public class ModConfig
         public float globalSpeedMultiplier = 1.0F;
         @Name("Disable Time Change During Invasions")
         public boolean disableTimeChangeInvasions = true;
+        @Name("Day Length In Ticks")
+        public long dayLengthTicks = 24000L;
     }
 
     public static class CategoryBloodyMaiden

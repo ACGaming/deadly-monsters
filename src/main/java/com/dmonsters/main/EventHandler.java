@@ -44,8 +44,8 @@ public class EventHandler
                     PacketHandler.INSTANCE.sendToAll(new PacketClientFXUpdate(player.getPosition(), PacketClientFXUpdate.Type.TIME_CHANGE));
                     if (world.getGameRules().getBoolean("doDaylightCycle"))
                     {
-                        long i = world.getWorldTime() + 24000L;
-                        world.setWorldTime((i - i % 24000L) - 6000L);
+                        long i = world.getWorldTime() + ModConfig.CATEGORY_GENERAL.dayLengthTicks;
+                        world.setWorldTime((i - i % ModConfig.CATEGORY_GENERAL.dayLengthTicks) - (ModConfig.CATEGORY_GENERAL.dayLengthTicks / 4));
                     }
                     Style red = new Style().setColor(TextFormatting.DARK_RED);
                     TextComponentTranslation msg = new TextComponentTranslation("msg.dmonsters.haunted_cow");
