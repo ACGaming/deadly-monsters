@@ -52,7 +52,7 @@ public class ModConfig
         @Name("Disable Time Change During Invasions")
         public boolean disableTimeChangeInvasions = true;
         @Name("Day Length In Ticks")
-        public long dayLengthTicks = 24000L;
+        public int dayLengthTicks = 24000;
     }
 
     public static class CategoryBloodyMaiden
